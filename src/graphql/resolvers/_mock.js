@@ -1,0 +1,48 @@
+import { mockPaginationFlags } from '../../constants'
+import { applyEdges, applyPages } from '../../helpers/graphql'
+// import { parsers } from '../models/_mock'
+
+const Query = {
+  /**
+   * ** info:
+   * cacheControl.cacheHint = { maxAge: 5 }
+   * fieldName = 'todo'
+   * fragments = {}
+   * parentType = 'Query'
+   * path = { key: 'todo' }
+   * returnType: "Todo"
+   * schema: { _directives: [], _queryType: 'Query', _mutationType: '' }
+   * variableValues: {}
+   */
+  todo: async (_, args, ctx, info) => {
+    const body = _pick(args, ['id'])
+    const opts = Object.assign({},
+      { stubName: 'success', cache: false, httpMethod: 'get' },
+      _pick(args, ['stubName', 'cache', 'httpMethod']),)
+    const res = await ctx.loader.load(`/todos/${body.id}`, body, opts)
+    return res
+  },
+  // * page-base
+  todos: async (_, args, ctx) => {
+    const body = _pick(args, ['skip', 'limit', 'filter', 'sort'])
+    const res = await ctx.loader.load('/todos', null)
+    return applyPages(res, body)
+  },
+  // * cursor-base
+  todosConnection: async (_, args, ctx) => {
+    const body = _pick(args, ['first', 'before', 'after', 'filter', 'sort'])
+    // todo  if database / service support pagination / filter / sort, apply them in fetch first
+    const res = await ctx.loader.load('/todos', null)
+    return applyEdges(res, {
+      flags: mockPaginationFlags,
+      args: body,
+      cursorName: 'id',
+    })
+  },
+}
+
+// const Mutation = {
+//   addPost: async (_, args, ctx) =>
+// }
+
+export default { Query }
