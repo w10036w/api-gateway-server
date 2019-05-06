@@ -3,6 +3,9 @@ service: api-gateway
 frameworkVersion: '>=1.21.0 <2.0.0'
 provider:
   name: aws
+  # https://statsbot.co/blog/a-crash-course-on-serverless-with-aws-running-node11-on-lambda/
+  # https://github.com/lambci/node-custom-lambda
+  # runtime: provided
   runtime: nodejs8.10.0 # has to be >8 for Koa
   stage: dev
   region: us-west-1
@@ -33,6 +36,8 @@ functions:
           path: '{proxy+}'
           method: any
           cors: true
+    # layers: # add layer
+      # - arn:aws:lambda:<region>:553035198032:layer:nodejs12:2
   playground:
     handler: src/handler.playground
     events:
@@ -40,6 +45,8 @@ functions:
           path: '/playground'
           method: get
           cors: true
+    # layers: # add layer
+      # - arn:aws:lambda:<region>:553035198032:layer:nodejs12:2
 # usagePlan: # Optional usage plan config
 #   quota:
 #     limit: 50000

@@ -30,8 +30,9 @@ const config = {
         new ApolloError(`cost: ${cost}(actual)>${maxCost}(maximum)`),
     }),
   ],
-  formatError,
   introspection: true, // enable in production
+  playground: true, // enable in production
+  formatError,
   cacheControl: isProd ? { defaultMaxAge: 5 } : {}, // NOTE dev disable cacheControl
   tracing: !isProd,
 }

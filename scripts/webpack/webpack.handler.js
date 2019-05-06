@@ -10,4 +10,5 @@ const handlerConfig = excludeNodes || !isProd ? common : { ...common, externals:
 
 module.exports = merge(handlerConfig, {
   entry: slsw.lib.entries,
+  mode: slsw.lib.webpack.isLocal ? 'development' : 'production',
 })
