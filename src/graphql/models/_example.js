@@ -22,6 +22,7 @@ export default gql`
     node: Todo
     # extra fields
   }
+  # https://stackoverflow.com/questions/44507631/graphql-arguments-on-object-in-query
   type Parent {
     child1: Int!
     child2(userId: String): String

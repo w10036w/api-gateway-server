@@ -1,11 +1,11 @@
 import Dataloader from 'dataloader'
 import { ApolloError } from 'apollo-errors'
-import request from '../plugins/request'
-import { logError } from '../middlewares/logger'
-import { cache, updateCache } from '../plugins/lru-cache'
+import request from '../plugins/request.plugin'
+import { logError } from '../middlewares/logger.middleware'
+import { cache, updateCache } from '../plugins/lru-cache.plugin'
+import { getJwtSign } from '../helpers/literal.helper'
 import { isStatic, cacheConfig, mockData } from '~env'
 
-const getJwtSign = jwt => (jwt ? jwt.split('.')[2] : '')
 
 /**
  * NOTE

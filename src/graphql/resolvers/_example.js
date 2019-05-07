@@ -1,6 +1,6 @@
 import { inspect } from 'util'
 import { mockPaginationFlags } from '../../constants'
-import { applyEdges, applyPages } from '../../helpers/graphql'
+import { applyCursor, applyOffset } from '../../helpers/gql.helper'
 // import { parsers } from '../models/_mock'
 
 const Query = {
@@ -25,18 +25,18 @@ const Query = {
     const res = await ctx.loader.load(`/todos/${body.id}`, body, opts)
     return res
   },
-  // * page-base
+  // * offset-base
   todos: async (_, args, ctx) => {
     const body = _pick(args, ['skip', 'limit', 'filter', 'sort'])
     const res = await ctx.loader.load('/todos', null)
-    return applyPages(res, body)
+    return applyOffset(res, body)
   },
   // * cursor-base
   todosConnection: async (_, args, ctx) => {
     const body = _pick(args, ['first', 'before', 'after', 'filter', 'sort'])
     // todo  if database / service support pagination / filter / sort, apply them in fetch first
     const res = await ctx.loader.load('/todos', null)
-    return applyEdges(res, {
+    return applyCursor(res, {
       flags: mockPaginationFlags,
       args: body,
       cursorName: 'id',

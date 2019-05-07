@@ -1,40 +1,25 @@
-import { camelCase } from 'lodash'
-// string
-const capitalOnly = str => str.replace(/^[a-z]/, s => s.toUpperCase())
-const kebab2pascal = _flow(camelCase, capitalOnly)
-const paddingInput = str => 'i' + str
-
-export const obj2fields = obj => {
-  let r = ''
-  Object.keys(obj).forEach(e => {
-    r += `${e}: ${obj[e]}\n`
-  })
-  return r
-}
-
-export const obj2type = (obj, name) => `${name}{${obj2fields(obj)}}`
-
-export const endpoint2type = kebab2pascal
-export const endpoint2query = camelCase
-export const endpoint2input = _flow(kebab2pascal, paddingInput)
-
-// todo what if edge-level filter
-export const gFilterId = filterString => {
+// * generate filterId for _filter
+// todo expression e.g. "id>3", "id=/^whatever$/"
+export const gFilterId = input => {
   // * json string "{"completed":true}"
-  const cond = JSON.parse(filterString)
+  const cond = JSON.parse(input)
   return e => Object.keys(cond).every(key => e[key] === cond[key])
-  // todo expression e.g. "id>3", "id=/^whatever$/"
 }
 
-// * -id+title / id_DESC title_ASC (primsa)
+// * generate sortId for _sortBy
 // todo const orders = sortString.split(/-|+/g)
+// todo e.g -id+title / id_DESC title_ASC (primsa)
 export const gSortId = sortString => (prev, next) => next.id > prev.id
 
-// todo cursor-level fields
-export const applyEdges = (list, opts) => {
+/**
+ * apply cursor-based pagination
+ * @param {Array} list input data
+ * @param {Object} opts options
+ */
+export const applyCursor = (list, opts) => {
   let listClone
   if (opts) {
-    // ! create a copy to avoid affecting cached list
+    // ! create a copy to avoid mutating
     listClone = _flow(JSON.stringify, JSON.parse)(list)
     // ? need to do all / partial tasks with no support from api
     const args = opts.args
@@ -61,7 +46,7 @@ export const applyEdges = (list, opts) => {
       listClone = _sortBy(listClone, sortId)
     }
   } else {
-    // * do nothing with cursor-based support from api
+    // * do nothing if pre-supported cursor-based
     listClone = list
   }
   const edges = listClone.map(e => ({
@@ -71,7 +56,12 @@ export const applyEdges = (list, opts) => {
   }))
   return { edges }
 }
-export const applyPages = (list, opts) =>
-  // todo something
+
+/**
+ * apply offset-based pagination
+ * @param {Array} list input data
+ * @param {Object} opts options
+ */
+export const applyOffset = (list, opts) =>
   list
 

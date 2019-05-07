@@ -1,2 +1,2 @@
-export * from './gql'
-export * from './regex'
+export * from './gql.const'
+export * from './regex.const'

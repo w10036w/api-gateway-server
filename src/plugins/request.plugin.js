@@ -1,7 +1,7 @@
 import { inspect } from 'util'
 import axios from 'axios'
 import tunnel from 'tunnel'
-import { logError } from '../middlewares/logger'
+import { logError } from '../middlewares/logger.middleware'
 import { rePath } from '../constants'
 import { BASE_URL, REQ_TIMEOUT, PROXY, isProd } from '~env'
 
