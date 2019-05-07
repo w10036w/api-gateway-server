@@ -15,8 +15,9 @@ const resolver = [
 const provides = [
   'provide-modules',
   {
-    'chalk': 'chalk',
     'apollo-server-koa': ['gql'],
+    'bluebird': 'Promise', // node > v10 can stop using bluebird since there is little gap
+    'chalk': 'chalk',
     'lodash': [
       { filter: '_filter' },
       { flow: '_flow' },
@@ -52,8 +53,9 @@ const stages = [
   '@babel/plugin-proposal-json-strings',
 ]
 // const cherryPick = [
-//   ['import',{ libraryName: 'lodash', libraryDirectory: '', camel2DashComponentName: false }, "lodash"],
-//   ['import', { libraryName: '-tools', libraryDirectory: 'dist', camel2DashComponentName: false }, "graphql-tools"],
+//   ['import', { libraryName: 'lodash', libraryDirectory: '', camel2DashComponentName: false }, 'lodash'],
+//   // ['import',
+//   // { libraryName: 'graphql-tools', libraryDirectory: 'dist', camel2DashComponentName: false }, "graphql-tools"],
 // ]
 const cherryPick = [
   'transform-imports',

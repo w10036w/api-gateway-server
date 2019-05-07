@@ -1,10 +1,21 @@
 import { inspect } from 'util'
 import axios from 'axios'
+import tunnel from 'tunnel'
 import { logError } from '../middlewares/logger'
-import { BASE_URL, REQ_TIMEOUT, isProd } from '~env'
+import { rePath } from '../constants'
+import { BASE_URL, REQ_TIMEOUT, PROXY, isProd } from '~env'
 
-const pathMatcher = /https?:\/\/[^/]+\/(.+)/
-const getPath = url => (url ? `/${url.match(pathMatcher)[1]}` : 'invalid url')
+const getPath = url => (url ? `/${url.match(rePath)[1]}` : 'invalid url')
+
+let httpsAgent
+if (PROXY) {
+  httpsAgent = tunnel.httpsOverHttp({
+    proxy: {
+      host: PROXY.host,
+      port: PROXY.port,
+    },
+  })
+}
 
 const request = axios.create({
   baseURL: BASE_URL,
@@ -12,6 +23,7 @@ const request = axios.create({
     'Content-Type': 'application/json; charset=utf-8',
     'timeout': REQ_TIMEOUT,
   },
+  httpsAgent,
 })
 
 if (!isProd) {

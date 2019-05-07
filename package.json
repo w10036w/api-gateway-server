@@ -5,18 +5,20 @@
   "main": "index.js",
   "scripts": {
     "benchmark": "cross-env node benchmark",
-    "build": "npm run build:webpack:exclude",
-    "build:webpack": "cross-env NODE_ENV=production webpack --config scripts/webpack/webpack.server.js --progress --hide-modules",
-    "build:webpack:exclude": "cross-env EXCLUDE_MODULES=true npm run build:webpack",
+    "build": "cross-env EXCLUDE_MODULES=false npm run webpack:build",
     "deploy": "cross-env NODE_ENV=production serverless --stage=dev deploy",
-    "dev": "npm-run-all --parallel server playground",
+    "dev": "npm run server",
+    "dev:all": "npm-run-all --parallel server playground",
     "handler": "cross-env NODE_ENV=development serverless offline start --dontPrintOutput",
-    "monitor": "cross-env NODE_ENV=production webpack --config scripts/webpack/webpack.monitor.js --progress --hide-modules",
+    "analyze": "cross-env EXCLUDE_MODULES=false npm run webpack:analyze",
     "playground": "graphql playground",
     "server": "cross-env NODE_ENV=development nodemon src/server -w .env.js -w src --exec babel-node --color",
     "setenv": "node scripts/setenv.js",
     "start": "cross-env NODE_ENV=production node dist/main",
-    "start:handler": "cross-env NODE_ENV=production serverless --stage=dev offline start --dontPrintOutput"
+    "start:handler": "cross-env NODE_ENV=production serverless --stage=dev offline start --dontPrintOutput",
+    "webpack:build": "cross-env NODE_ENV=production webpack --config scripts/webpack/webpack.server.js --progress --hide-modules",
+    "webpack:analyze": "cross-env NODE_ENV=production webpack --config scripts/webpack/webpack.analyze.js --progress --hide-modules",
+    "webpack:monitor": "cross-env NODE_ENV=production webpack --config scripts/webpack/webpack.monitor.js --progress --hide-modules"
   },
   "devDependencies": {
     "0x": "^4.8.2",
@@ -47,7 +49,6 @@
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.5",
     "babel-minify-webpack-plugin": "^0.3.1",
-    "babel-plugin-import": "^1.11.0",
     "babel-plugin-macros": "^2.5.1",
     "babel-plugin-module-resolver": "^3.2.0",
     "babel-plugin-provide-modules": "^1.0.3",
@@ -72,6 +73,7 @@
     "prettier-eslint": "^8.8.2",
     "ts-loader": "^5.4.5",
     "webpack": "^4.30.0",
+    "webpack-bundle-analyzer": "^3.3.2",
     "webpack-cli": "^3.3.2",
     "webpack-merge": "^4.2.1",
     "webpack-monitor": "^1.0.14",
@@ -96,10 +98,10 @@
     "graphql-iso-date": "^3.6.1",
     "graphql-playground-middleware-lambda": "^1.7.13",
     "graphql-tools": "^4.0.4",
-    "https": "^1.0.0",
     "kcors": "^2.2.2",
     "koa": "^2.7.0",
     "koa-bodyparser": "^4.2.1",
+    "koa-compress": "3.0.0",
     "koa-rapid-router": "^1.0.7",
     "koa-router": "^7.4.0",
     "koa2-ratelimit": "^0.8.0",
@@ -111,6 +113,7 @@
     "serverless-http": "^2.0.1",
     "serverless-offline": "^4.10.0",
     "serverless-webpack": "^5.3.0",
+    "tunnel": "0.0.6",
     "winston": "^3.2.1"
   }
 }

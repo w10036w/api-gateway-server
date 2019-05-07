@@ -10,8 +10,9 @@
 // * env specific
 export const BASE_URL = 'https://jsonplaceholder.typicode.com/'
 export const DATA_ENV = process.env.DATA_ENV || 'mock' // region
-
 export const isStatic = DATA_ENV === 'static'
+
+export const PROXY = ''
 
 // * general
 export const PORT = 8000

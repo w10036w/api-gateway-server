@@ -1,29 +1,22 @@
-const { optimize } = require('webpack')
 const nodeExternals = require('webpack-node-externals')
 const paths = require('../paths')
 
-const { ModuleConcatenationPlugin } = optimize
+const excludeNodes = process.env.EXCLUDE_MODULES === 'true'
 
-const excludeNodeConfig = {
-  externals: [
-    nodeExternals({
-      modulesFromFile: true,
-    }),
-  ],
-}
-exports.excludeNodeConfig = excludeNodeConfig
+const excludeNodeModules = nodeExternals({
+  modulesFromFile: true,
+})
 
 module.exports = {
   mode: 'production',
   entry: './src/server.js',
   target: 'node',
+  externals: excludeNodes ? [excludeNodeModules] : [],
   output: {
     libraryTarget: 'commonjs',
     path: paths.appBuild,
     filename: '[name].js',
   },
-  // NOTE if need to exclude node_modules
-  ...excludeNodeConfig,
   stats: {
     colors: true,
     reasons: false,
@@ -59,10 +52,4 @@ module.exports = {
       },
     ],
   },
-  plugins: [
-    // https://webpack.js.org/plugins/module-concatenation-plugin/
-    new ModuleConcatenationPlugin(),
-  ],
 }
-// TODO watch graphql
-// https://github.com/jaredpalmer/backpack/issues/115

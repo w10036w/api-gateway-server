@@ -1,7 +1,7 @@
 import Koa from 'koa'
-import Promise from 'bluebird'
 import koaBody from 'koa-bodyparser'
 import { ApolloServer } from 'apollo-server-koa'
+import chalk from 'chalk'
 import { config as apolloConfig } from './graphql'
 import { middleware as logger, log } from './middlewares/logger'
 // import { middleware as ratelimit } from './middlewares/ratelimit'
@@ -9,7 +9,6 @@ import { name } from '../package.json'
 import { PORT, GQL_PATH, DATA_ENV, isProd } from '~env'
 
 global.log = log
-global.Promise = Promise
 chalk.enabled = !isProd
 const hasParent = module.parent
 
