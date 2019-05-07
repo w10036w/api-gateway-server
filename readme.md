@@ -14,19 +14,45 @@
     # if run with playground app
     npm run dev
     # else
-    npm run server
-    # then visit localhost:8000/graphql
+    npm run server # then visit localhost:8000/graphql
 
     # if run serverless-offline
-    npm run handler
-    # then visit localhost:8000/playground
+    npm run handler # then visit localhost:8000/playground
 
     # normal deploy
     npm run build
+    npm run build:bundle # alternative
 
     # deploy to aws
     npm run deploy
+
+    # Visualize module size
+    npm run analyze # make sure you config EXCLUDE_MODULES properly
+    npm run webpack:monitor # alternative
+
+    # run with pandora monitor on production
+    npm run start:pandora
+    npm run start:monitor
     ```
+
+### Visualization
+
+- pandora monitor
+  
+  <img src="screenshots/dashboard_trace.png" width="80%">
+  <img src="screenshots/dashboard_http.png" width="80%">
+
+- analyze (exclude node_modules)
+  
+  <img src="screenshots/analyze_exclude.png" width="80%">
+
+  alternative (include node_modules, via webpack-monitor)
+
+  <img src="screenshots/analyze_include.png" width="80%">
+
+### Benchmark (to be done)
+
+### Test (to be done)
 
 ### ESLint + prettier + babel setup
 
@@ -56,30 +82,17 @@
 
 - [Reference of Rules](https://eslint.org/docs/rules/)
 
-### Visualize Module Size
-
-`npm run monitor`
-
-### Benchmark (to be done)
-
-### Test (to be done)
-
-
 ## Todo List
 
-- [x] `Dataloader` Usage, cache / LRU cache
-- [x] edges implementation (`before` handler left)
-- [x] 3rd party scalars: [@okgrow/graphql-scalars](https://github.com/okgrow/graphql-scalars)
-- [ ] use `marco` to completely wipe unnecessary codes, e.g. stub requires
 - [ ] serverless deployment to amazon
 - [ ] explore other graphql validationRules
-- [ ] client set head `Accept-Encoding: gzip`
 - [ ] Relay mock data
   - [ ] [graphql-anywhere](https://www.npmjs.com/package/graphql-anywhere)
 - [ ] [how to use fragments in relay](https://www.apollographql.com/docs/react/advanced/fragments)
 - [ ] [Why use connections](https://blog.apollographql.com/explaining-graphql-connections-c48b7c3d6976)
 - [ ] [babel macro](https://medium.freecodecamp.org/using-babel-macros-with-react-native-8615aaf5b7df) penv.marco cannot point to other variable except NODE_ENV
 - [ ] [APP] Add Relay in CRA
+- [ ] client set head `Accept-Encoding: gzip`
   
   ```js
   import graphql from 'babel-plugin-replay/macro
