@@ -3,14 +3,14 @@ import { mergeTypes, mergeResolvers } from 'merge-graphql-schemas'
 // directives
 import uppercase from './directives/uppercase'
 // schemas
-import sCONST from './models/_const'
-import sMock from './models/_mock'
+import constS from './models/_const'
+import exampleS from './models/_example'
 // resolvers
-import * as rCONST from './resolvers/_const'
-import rMock from './resolvers/_mock'
+import * as constR from './resolvers/_const'
+import exampleR from './resolvers/_example'
 
-const schemaFiles = [sCONST, sMock]
-const resolverFiles = [rCONST, rMock]
+const schemaFiles = [constS, exampleS]
+const resolverFiles = [constR, exampleR]
 
 const typeDefs = mergeTypes(schemaFiles, { all: true })
 const resolvers = mergeResolvers(resolverFiles)

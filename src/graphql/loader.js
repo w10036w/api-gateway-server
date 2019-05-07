@@ -1,10 +1,9 @@
 import Dataloader from 'dataloader'
 import { ApolloError } from 'apollo-errors'
-import penv from 'penv.macro'
 import request from '../plugins/request'
 import { logError } from '../middlewares/logger'
 import { cache, updateCache } from '../plugins/lru-cache'
-import { isStatic } from '~env'
+import { isStatic, cacheConfig, mockData } from '~env'
 
 const getJwtSign = jwt => (jwt ? jwt.split('.')[2] : '')
 
@@ -20,16 +19,20 @@ const getJwtSign = jwt => (jwt ? jwt.split('.')[2] : '')
 const cacheKeyFn = ({ path, body }) => `${path}|${JSON.stringify(body || '')}`
 const cacheKeyLRU = ({ path, body, jwt = '' }) => `${path}|${JSON.stringify(body || '')}|${getJwtSign(jwt)}`
 // default Dataloader options
-const defaultOpts = { batch: false, cache: true, cacheKeyFn }
+const defaultOpts = { batch: false, cache: cacheConfig.dataloader, cacheKeyFn }
 
 // const bodyEntries = _sortBy(Object.entries(body), [e => e])
 
 export class Loader {
+  /**
+   *
+   * @param {Object} config Loader configs: { headers, lruCache, httpMethod }
+   * @param {Object} options dataloader options https://github.com/graphql/dataloader#api
+   */
   constructor(config, options = {}) {
     if (config) {
       this.setConfig(config)
     }
-    // dataloader options: https://github.com/graphql/dataloader#api
     this.$dlConfig = Object.assign({}, defaultOpts, options)
     this.$loader = new Dataloader(keys => this.$fetch(keys), this.$dlConfig)
   }
@@ -38,7 +41,7 @@ export class Loader {
   /**
    * @description: if options.cache = false, consider enable lru (FIFO) cache
    */
-  $lruConfig = { enabled: false }
+  $lruConfig = { enabled: cacheConfig.lru }
   $dlConfig = defaultOpts
   $headers = {}
   $httpMethod = 'post'
@@ -57,12 +60,12 @@ export class Loader {
 
   $fetchRemote({ path, body }) {
     const [bearer, jwt] = _values(this.$headers)
-    // log.warn(`bearer: ${bearer}, jwt: ${jwt}`)
-    // if (!bearer && !isStatic) {
-    //   throw new ApolloError(
-    //     "Please set Authorization in http headers when DATA_ENV !== static"
-    //   )
-    // }
+    log.warn(`bearer: ${bearer}, jwt: ${jwt}`)
+    if (!bearer && !isStatic) {
+      throw new ApolloError(
+        'Please set Authorization in http headers when DATA_ENV !== static'
+      )
+    }
     const opts = (bearer || jwt) ? { headers: this.$headers } : {}
     const { enabled: lruEnabled } = this.$lruConfig
     let keyLRU = ''
@@ -86,10 +89,7 @@ export class Loader {
   $fetchStatic({ path, opts }) {
     try {
       const fileName = opts.stubName || 'success'
-      const res = penv({
-        development: require(`../../stubs${path}/${fileName}.json`),
-        production: { body: null },
-      })
+      const res = mockData(path, fileName)
       return res.body
     } catch (err) {
       logError(err, 'fStatic', path)
@@ -102,7 +102,7 @@ export class Loader {
     if (headers) {
       this.$setHeaders(config.headers)
     }
-    if (lruCache === true) this.$lruConfig = { enabled: true, cacheMap: cache }
+    if (typeof lruCache === 'boolean') this.$lruConfig = { enabled: lruCache }
     if (httpMethod) this.$httpMethod = httpMethod
     return this
   }

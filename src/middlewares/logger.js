@@ -38,7 +38,7 @@ function graphqlReqFormat(
   { prefix = '', slice = 0, headers = false } = {}
 ) {
   if (isProd) {
-    const body = JSON.stringify(request.body).replace(/(\s|\\n)+/g, '')
+    const body = JSON.stringify(request.body).replace(/(\s|\\n)+/g, ' ')
     return slice === 0 ? body : body.slice(0, slice)
   }
   let body = prefix

@@ -1,8 +1,7 @@
 import Koa from 'koa'
 import koaBody from 'koa-bodyparser'
-import { ApolloServer } from 'apollo-server-koa'
 import chalk from 'chalk'
-import { config as apolloConfig } from './graphql'
+import { server as graphqlServer } from './graphql'
 import { middleware as logger, log } from './middlewares/logger'
 // import { middleware as ratelimit } from './middlewares/ratelimit'
 import { name } from '../package.json'
@@ -25,8 +24,7 @@ const middlewares = {
 const middlewareKeys = Object.keys(middlewares)
 middlewareKeys.forEach(e => app.use(middlewares[e]()))
 
-const server = new ApolloServer(apolloConfig)
-server.applyMiddleware({ app, path: GQL_PATH })
+graphqlServer.applyMiddleware({ app, path: GQL_PATH })
 
 const boot = async () => {
   if (!isProd) {
