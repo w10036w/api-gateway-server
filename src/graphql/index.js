@@ -39,7 +39,7 @@ const server = new CostAnalysisApolloServer({
     return {
       // loader: loader.setConfig({ headers }),
       // if need for isolate cache / different authorization level in a single query
-      loader: ctxLoader({ headers, lruCache: true }, { cache: cacheConfig.dataloader }),
+      loader: ctxLoader({ headers, lruCache: cacheConfig.lru }, { cache: cacheConfig.dataloader }),
     }
   },
   // rootValue: {},
