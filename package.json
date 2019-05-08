@@ -2,7 +2,7 @@
   "name": "api-gateway",
   "version": "0.1.0",
   "description": "API Gateway Server built with koa, graphql",
-  "main": "index.js",
+  "main": "./src/server.js",
   "scripts": {
     "benchmark": "cross-env node benchmark",
     "build": "cross-env EXCLUDE_MODULES=true npm run webpack:build",
