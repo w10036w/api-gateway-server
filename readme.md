@@ -84,50 +84,40 @@
 
 ## Todo List
 
-- [ ] serverless deployment to amazon
-- [ ] explore other graphql validationRules
-- [ ] Relay mock data
-  - [ ] [graphql-anywhere](https://www.npmjs.com/package/graphql-anywhere)
-- [ ] [how to use fragments in relay](https://www.apollographql.com/docs/react/advanced/fragments)
-- [ ] [Why use connections](https://blog.apollographql.com/explaining-graphql-connections-c48b7c3d6976)
-- [ ] [babel macro](https://medium.freecodecamp.org/using-babel-macros-with-react-native-8615aaf5b7df) penv.marco cannot point to other variable except NODE_ENV
-- [ ] [APP] Add Relay in CRA
-- [ ] client set head `Accept-Encoding: gzip`
+- server
+  - [ ] [deploy] serverless deployment to amazon
+  - [ ] [dev] explore other graphql validationRules
+  - [ ] [benchmark] tunning nodejs with `npm i -D autocannon 0x`: search and github nearform/slow-rest-api
+
+- client
+  - [ ] Add Relay in CRA
+  - [ ] Relay mock data
+    - [graphql-anywhere](https://www.npmjs.com/package/graphql-anywhere)
+  - [ ] [how to use fragments in relay](https://www.apollographql.com/docs/react/advanced/fragments)
+  - [ ] react-native-animatable
+  - [ ] state management floway rxjs effector
   
-  ```js
-  import graphql from 'babel-plugin-replay/macro
-  graphql`query UserQuery { viewer }`
-  ```
+- web only
+  - [ ] client set head `Accept-Encoding: gzip`
+  - [ ] polyfill from Financial Time `<script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>`
 
-- [ ] tunning nodejs with `npm i -D autocannon 0x`: search and github nearform/slow-rest-api
-- [ ] api-db-server example: [node_graphql_apollo_template](https://github.com/brianschardt/node_graphql_apollo_template)
+- app only
+  - [ ] code push: https://github.com/rccoder/blog/issues/27
 
-## packages pending to install
+- global
+  - Typescript packages added for potential usage
 
-### graphql helpers
-
-- `npm i -D babel-plugin-relay/macro`
-
-### Typescript packages added for potential usage
-
-- `npm i -D typescript @babel/preset-typescript serverless-plugin-typescript ts-node @types/lodash @types/node`
-- `npm i -S serverless-plugin-typescript`
-- installed `ts-loader`
-
-### native
-
-- `npm i -S react-native-animatable`
-
-### Babel
-
-### Client common
-
-- `npm i -S floway rxjs`
+    ```bash
+    npm i -D typescript @babel/preset-typescript serverless-plugin-typescript ts-node @types/lodash @types/node
+    npm i -S serverless-plugin-typescript
+    ```
 
 ### Web
 
-- polyfill from Financial Time `<script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>`
 
-## Reference list
+## Other Reference list
 
 - [react-redux-graphql-apollo-bootstrap-webpack-starter](https://github.com/MacKentoch/react-redux-graphql-apollo-bootstrap-webpack-starter)
+- [Why use connections](https://blog.apollographql.com/explaining-graphql-connections-c48b7c3d6976)
+- [babel macro](https://medium.freecodecamp.org/using-babel-macros-with-react-native-8615aaf5b7df)
+- [node_graphql_apollo_template](https://github.com/brianschardt/node_graphql_apollo_template)
