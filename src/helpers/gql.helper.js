@@ -39,6 +39,7 @@ export const applyCursor = (list, opts) => {
       listClone = _filter(listClone, filterId)
     }
     if (first && listClone.length > first) {
+      // todo limit first<100
       listClone = _slice(listClone, 0, first)
     }
     if (sort) {

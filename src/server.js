@@ -1,13 +1,16 @@
+
 import Koa from 'koa'
 import koaBody from 'koa-bodyparser'
 import chalk from 'chalk'
 import { server as graphqlServer } from './graphql'
 import { middleware as logger, log } from './middlewares/logger.middleware'
-// import { middleware as ratelimit } from './middlewares/ratelimit'
+import { middleware as ratelimit } from './middlewares/ratelimit.middleware'
 import { name } from '../package.json'
 import { PORT, GQL_PATH, DATA_ENV, isProd } from '~env'
 
 global.log = log
+global.Promise = require('bluebird') // node > v10 can stop using bluebird since there is little gap
+
 chalk.enabled = !isProd
 const hasParent = module.parent
 
@@ -16,7 +19,7 @@ app.use(koaBody())
 // * middlewares -> `src/middlewares`
 const middlewares = {
   // cors,
-  // ratelimit,
+  ratelimit,
   // cacheJwt,
   logger,
   // route,

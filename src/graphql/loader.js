@@ -2,10 +2,9 @@ import Dataloader from 'dataloader'
 import { ApolloError } from 'apollo-errors'
 import request from '../plugins/request.plugin'
 import { logError } from '../middlewares/logger.middleware'
-import { cache, updateCache } from '../plugins/lru-cache.plugin'
+import { cacheMap as URLCacheMap, searchCache, updateCache } from '../plugins/lru-cache.plugin'
 import { getJwtSign } from '../helpers/literal.helper'
-import { isStatic, cacheConfig, mockData } from '~env'
-
+import { isStatic, loaderConfig } from '~env'
 
 /**
  * NOTE
@@ -19,7 +18,7 @@ import { isStatic, cacheConfig, mockData } from '~env'
 const cacheKeyFn = ({ path, body }) => `${path}|${JSON.stringify(body || '')}`
 const cacheKeyLRU = ({ path, body, jwt = '' }) => `${path}|${JSON.stringify(body || '')}|${getJwtSign(jwt)}`
 // default Dataloader options
-const defaultOpts = { batch: false, cache: cacheConfig.dataloader, cacheKeyFn }
+const defaultOpts = { batch: false, cache: true, cacheKeyFn }
 
 // const bodyEntries = _sortBy(Object.entries(body), [e => e])
 
@@ -38,10 +37,11 @@ export class Loader {
   }
 
   $loader = {}
+  $auth = false
   /**
    * @description: if options.cache = false, consider enable lru (FIFO) cache
    */
-  $lruConfig = { enabled: cacheConfig.lru }
+  $cacheMap
   $dlConfig = defaultOpts
   $headers = {}
   $httpMethod = 'post'
@@ -59,37 +59,36 @@ export class Loader {
   )
 
   $fetchRemote({ path, body }) {
-    const [bearer, jwt] = _values(this.$headers)
-    log.warn(`bearer: ${bearer}, jwt: ${jwt}`)
-    if (!bearer && !isStatic) {
-      throw new ApolloError(
-        'Please set Authorization in http headers when DATA_ENV !== static'
-      )
-    }
-    const opts = (bearer || jwt) ? { headers: this.$headers } : {}
-    const { enabled: lruEnabled } = this.$lruConfig
+    const { $auth, $httpMethod, $cacheMap } = this
+    let opts = {}
+    let jwt
+    let cached
     let keyLRU = ''
-    if (lruEnabled) {
-      keyLRU = cacheKeyLRU({ path, body, jwt })
-      if (cache.has(keyLRU)) {
-        log.info(chalk.yellowBright(`[lrucach] old ${keyLRU}`))
-        return cache.get(keyLRU)
+
+    if ($auth) {
+      const bearer = this.$headers.Authorization
+      if (!bearer && !isStatic) {
+        throw new ApolloError('Set headers.Authorization in non-static mode')
       }
-      log.info(chalk.yellow(`[lrucach] new ${keyLRU}`))
+      if (bearer) opts = { headers: this.$headers }
     }
 
-    const httpMethod = this.$httpMethod
-    return request[httpMethod](path, body, opts)
-      // .then(e => updateCache(keyLRU, _get(e, 'data')))
-      .then(e => _get(e, 'data'))
-      .then(e => (lruEnabled ? updateCache(keyLRU, e) : e))
-      .catch(err => logError(err, 'fRemote', path))
+    if ($cacheMap) {
+      keyLRU = cacheKeyLRU({ path, body, jwt })
+      cached = searchCache($cacheMap, keyLRU)
+    }
+
+    return typeof cached == 'undefined'
+      ? request[$httpMethod](path, body, opts)
+        .then(e => _get(e, 'data'))
+        .then(e => ($cacheMap ? updateCache($cacheMap, keyLRU, e) : e))
+      : cached
   }
 
   $fetchStatic({ path, opts }) {
     try {
       const fileName = opts.stubName || 'success'
-      const res = mockData(path, fileName)
+      const res = loaderConfig.mock(path, fileName)
       return res.body
     } catch (err) {
       logError(err, 'fStatic', path)
@@ -98,11 +97,12 @@ export class Loader {
 
   setConfig(config) {
     if (!config) return this
-    const { headers, lruCache, httpMethod } = config
+    const { headers, cacheMap, httpMethod, auth } = config
     if (headers) {
       this.$setHeaders(config.headers)
     }
-    if (typeof lruCache === 'boolean') this.$lruConfig = { enabled: lruCache }
+    this.$auth = !!auth
+    if (cacheMap) this.$cacheMap = URLCacheMap
     if (httpMethod) this.$httpMethod = httpMethod
     return this
   }
@@ -111,9 +111,13 @@ export class Loader {
   load(path, body, opts = {}) {
     // log.warn(`${path} ${JSON.stringify(body)} ${JSON.stringify(opts)}`)
     if (opts.httpMethod) this.$httpMethod = opts.httpMethod
-    if (opts.cache === false) {
+    if (opts._forceUpdate) {
       this.$loader.clear({ path, body })
-      log.warn(`[ loader] clear ${cacheKeyFn({ path, body })}`)
+      const $cacheMap = this.$cacheMap
+      if ($cacheMap) {
+        const jwt = this.$auth ? this.$headers['Authorization-Token'] : ''
+        $cacheMap.del(cacheKeyLRU({ path, body, jwt }))
+      }
     }
     return this.$loader.load({ path, body, opts }) // todo test return diff stub
   }

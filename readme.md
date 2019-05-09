@@ -1,5 +1,9 @@
 # API Gateway Server
 
+> As https://nodesecurity.io/advisories/550, not recommended to use pandora-dashboard. New query to node.js online monitoring.
+
+> Cannot build node_modules within the bundle file. X
+
 ## Guide
 
 ### Development
@@ -12,16 +16,16 @@
 
 6. ```bash
     # if run with playground app
-    npm run dev
-    # else
-    npm run server # then visit localhost:8000/graphql
+    npm run dev:all
+    # or
+    npm run dev # then visit localhost:8000/graphql
+    npm run server # alternative
 
     # if run serverless-offline
     npm run handler # then visit localhost:8000/playground
 
     # normal deploy
     npm run build
-    npm run build:bundle # alternative
 
     # deploy to aws
     npm run deploy
@@ -85,6 +89,7 @@
 ## Todo List
 
 - server
+  - [ ] get cost-analysis alternative like [graphql-cost](https://github.com/iamake/graphql-cost), [graphql-validation-complexity](https://github.com/4Catalyzer/graphql-validation-complexity)
   - [ ] [deploy] serverless deployment to amazon
   - [ ] [dev] explore other graphql validationRules
   - [ ] [benchmark] tunning nodejs with `npm i -D autocannon 0x`: search and github nearform/slow-rest-api
@@ -114,10 +119,13 @@
 
 ### Web
 
-
 ## Other Reference list
 
 - [react-redux-graphql-apollo-bootstrap-webpack-starter](https://github.com/MacKentoch/react-redux-graphql-apollo-bootstrap-webpack-starter)
 - [Why use connections](https://blog.apollographql.com/explaining-graphql-connections-c48b7c3d6976)
 - [babel macro](https://medium.freecodecamp.org/using-babel-macros-with-react-native-8615aaf5b7df)
 - [node_graphql_apollo_template](https://github.com/brianschardt/node_graphql_apollo_template)
+
+## Known issues
+
+- include node_modules build failed due to apollo-server-koa -> node-fetch 

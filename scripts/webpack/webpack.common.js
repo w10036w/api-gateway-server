@@ -1,17 +1,18 @@
 const nodeExternals = require('webpack-node-externals')
 const paths = require('../paths')
 
-const excludeNodes = process.env.EXCLUDE_MODULES === 'true'
+const inclusive = process.env.INCLUSIVE === 'true'
 
 const excludeNodeModules = nodeExternals({
   modulesFromFile: true,
+  target: 'node',
 })
 
 module.exports = {
   mode: 'production',
   entry: './src/server.js',
   target: 'node',
-  externals: excludeNodes ? [excludeNodeModules] : [],
+  externals: inclusive ? [] : [excludeNodeModules],
   output: {
     libraryTarget: 'commonjs',
     path: paths.appBuild,

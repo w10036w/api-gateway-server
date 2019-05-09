@@ -7,7 +7,7 @@ const resolver = [
   {
     alias: {
       '~graphql': './src/graphql',
-      '~env': './.env.js',
+      '~env': './.env.general.js',
     },
   },
 ]
@@ -15,10 +15,8 @@ const resolver = [
 const provides = [
   'provide-modules',
   {
-    'apollo-server-koa': ['gql'],
-    'bluebird': 'Promise', // node > v10 can stop using bluebird since there is little gap
-    'chalk': 'chalk',
-    'lodash': [
+    chalk: 'chalk',
+    lodash: [
       { filter: '_filter' },
       { flow: '_flow' },
       { pick: '_pick' },
@@ -87,7 +85,8 @@ const env = {
   production: {
     plugins,
     // https://github.com/babel/minify/tree/master/packages/babel-preset-minify#1-1-mapping-with-plugin
-    presets: [...presets, 'babel-preset-minify'],
+    // presets: [...presets, 'babel-preset-minify'],
+    presets,
   },
 }
 

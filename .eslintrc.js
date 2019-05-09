@@ -13,7 +13,7 @@ module.exports = {
       'babel-module': {
         alias: {
           '~graphql': './src/graphql',
-          '~env': './env.js',
+          '~env': './env.general.js',
         },
       },
     },

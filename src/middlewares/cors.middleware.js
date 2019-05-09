@@ -8,9 +8,8 @@ const devBypass = (whitelist, origin) => {
 export const middleware = whitelist => {
   function orginFilter(ctx) {
     const reqOrigin = ctx.accept.headers.origin
-    log.debug(reqOrigin)
     if (!devBypass(whitelist, reqOrigin) && !whitelist.includes(reqOrigin)) {
-      ctx.body = `[CORS] ${reqOrigin} is not allowed`
+      ctx.body = `[koaCors] ${reqOrigin} is not allowed`
       return
     }
     return reqOrigin
@@ -22,3 +21,10 @@ export const middleware = whitelist => {
   }
   return koaCors(corsConfig)
 }
+
+// export const middleware = whitelist => {
+//   return async (ctx, next) {
+
+//     next()
+//   }
+// }

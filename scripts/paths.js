@@ -41,6 +41,7 @@ module.exports = {
   dotenv: resolveApp('.env.js'),
   dotenvTpl: resolveApp('.env.tpl'),
   appBuild: resolveApp('dist'),
+  appBuildFile: resolveApp('dist/main.js'),
   appPublic: resolveApp('public'),
   appHtml: resolveApp('public/index.html'),
   appIndexJs: resolveApp('src/index.tsx'),

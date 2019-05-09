@@ -1,3 +1,5 @@
+import { gql } from 'apollo-server-koa'
+
 export default gql`
   type Query {
     todo(id: Int!, stubName: String, cache: Boolean = true): Todo
