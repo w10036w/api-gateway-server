@@ -28,3 +28,26 @@ export default gql`
     child2(userId: String): String
   }
 `
+// example query
+// query test_todo_online ($first: Int) {
+//   todo(id: 10, ) {
+//     id
+//     title
+//     completed
+//     userId
+//   }
+//   todosConnection(first: $first) {
+//     edges{
+//       node {
+//         id
+//         title
+//       }
+//       cursor
+//     }
+//   }
+// }
+
+// variables
+// {
+//   "first": 10
+// }
