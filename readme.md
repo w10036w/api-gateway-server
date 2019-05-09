@@ -125,7 +125,7 @@
 - [Why use connections](https://blog.apollographql.com/explaining-graphql-connections-c48b7c3d6976)
 - [babel macro](https://medium.freecodecamp.org/using-babel-macros-with-react-native-8615aaf5b7df)
 - [node_graphql_apollo_template](https://github.com/brianschardt/node_graphql_apollo_template)
-
+- [Securing Your GraphQL API from Malicious Queries](https://blog.apollographql.com/securing-your-graphql-api-from-malicious-queries-16130a324a6b)
 ## Known issues
 
 - include node_modules build failed due to apollo-server-koa -> node-fetch 
