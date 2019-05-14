@@ -11,6 +11,7 @@
     "dev:all": "npm-run-all --parallel server playground",
     "handler": "cross-env NODE_ENV=development serverless offline start --dontPrintOutput",
     "analyze": "cross-env npm run webpack:analyze",
+    "analyze:all": "cross-env BUNDLE_MODE=all npm run webpack:analyze",
     "playground": "graphql playground",
     "server": "cross-env NODE_ENV=development nodemon src/server -w .env.js -w .env.general.js -w src --exec babel-node --color",
     "setenv": "node scripts/setenv.js",
